@@ -53,6 +53,8 @@ and corresponding beans.xml:
 Let's create a test to ensure that errorHandler will be called by integerConverter exactly one time in case of error. So, in terms of Mockito we need to inject the mocked errorHandler and verify interactions count. This might be done by adding MockitoPropagatingFactoryPostProcessor to the Spring context.
 MockitoPropagatingFactoryPostProcessor - is a BeanFactoryPostProcessor
 
+```java
+
     @RunWith(SpringJUnit4ClassRunner.class)
     @ContextConfiguration(classes = AutowiredMockTest.MockedConfig.class)
     public class AutowiredMockTest {
@@ -88,4 +90,5 @@ MockitoPropagatingFactoryPostProcessor - is a BeanFactoryPostProcessor
         }
     }
 
+```
 
