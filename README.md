@@ -8,7 +8,7 @@ Simple step by step tutorial
 
 Let's assume that we have two beans:
    - errorHandler with method onError() which re-throws corresponding  exception,
-   - integerConverter with method convert() which is returns integer value parsed from passed string or calls autowired instance of errorHandler in case of error.
+   - integerConverter with method convert() which is returns either an integer value parsed from passed string or it calls autowired instance of errorHandler in case of error.
 
 Here is a simple implementation of those beans:
 
