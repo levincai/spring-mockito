@@ -58,40 +58,66 @@ This might be done by adding MockitoPropagatingFactoryPostProcessor as follows:
 
 ```java
 
-    @RunWith(SpringJUnit4ClassRunner.class)
-    @ContextConfiguration(classes = AutowiredMockTest.MockedConfig.class)
-    public class AutowiredMockTest {
-        @Configuration
-        @ImportResource("classpath:/beans.xml")  // Original configuration
-        static class MockedConfig{
-            @Mock
-            private ExceptionGenerator exceptionGenerator;
-    
-            @Bean
-            public ExceptionGenerator exceptionGenerator(){
-                return exceptionGenerator;
-            }
-    
-            @Bean
-            public MockitoPropagatingFactoryPostProcessor postProcessor(){
-                return new MockitoPropagatingFactoryPostProcessor(this);
-            }
-        }
-    
-        @Autowired
-        private ExceptionGenerator eg;
-    
-        @Test
-        public void mustNotRaiseExceptionIfItsWasMocked() throws Exception {
-            assertNotNull("Spring doesn't properly configured", eg);
-    
-            // original bean always throws exception
-            eg.generateException();
-    
-            verify(eg, Mockito.times(1)).generateException();
-            Mockito.verifyNoMoreInteractions(eg);
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = AutowiredMockTest.MockedConfig.class)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+public class AutowiredMockTest {
+
+    public static class ErrorHandler{
+        public void onError(Throwable e) throws RuntimeException {
+            throw new RuntimeException("Exception was generated upon request", e);
         }
     }
+
+    public static class IntegerConverter{
+        @Autowired
+        private ErrorHandler errorHandler;
+
+        public int convert(String value){
+            try {
+                return Integer.parseInt(value);
+            }catch (NumberFormatException e) {
+                errorHandler.onError(e);
+                return -1;
+            }
+        }
+    }
+
+    @Configuration
+    @ImportResource("classpath:/beans.xml")
+    static class MockedConfig{
+        @Mock
+        private ErrorHandler errorHandler;
+
+        @Bean
+        public ErrorHandler exceptionGenerator(){
+            return errorHandler;
+        }
+
+        @Bean
+        public MockitoPropagatingFactoryPostProcessor postProcessor(){
+            return new MockitoPropagatingFactoryPostProcessor(this);
+        }
+    }
+
+    @Autowired
+    private ErrorHandler errorHandler;
+
+    @Autowired
+    private IntegerConverter integerConverter;
+
+    @Test
+    public void shouldCallErrorHandlerExactlyOnce() throws Exception {
+        // check that Spring was configured properly
+        assertNotNull("Spring doesn't properly configured", integerConverter);
+        assertNotNull("Spring doesn't properly configured", errorHandler);
+
+        integerConverter.convert("xYz");
+
+        verify(errorHandler, Mockito.times(1)).onError(any(Throwable.class));
+        Mockito.verifyNoMoreInteractions(errorHandler);
+    }
+}
 
 ```
 
