@@ -1,7 +1,7 @@
 spring-mockito
 ==============
 
-Significantly simplifies Spring bean mocking by providing [MockitoPropagatingFactoryPostProcessor](https://github.com/srgg/spring-mockito/blob/master/src/main/java/com/github/srgg/springmockito/MockitoPropagatingFactoryPostProcessor.java) replaces original beans with their mocks, therefore as a result Autowiring works fine out of the box. You can find Spring Test example below.
+Significantly simplifies Spring bean mocking by providing [MockitoPropagatingFactoryPostProcessor](https://github.com/srgg/spring-mockito/blob/master/src/main/java/com/github/srgg/springmockito/MockitoPropagatingFactoryPostProcessor.java) that replace original beans with their mocks, therefore as a result Autowiring works fine out of the box. You can find Spring Test example below.
 
 Simple step by step tutorial
 ============================
@@ -59,7 +59,7 @@ MockitoPropagatingFactoryPostProcessor - is a BeanFactoryPostProcessor
     @ContextConfiguration(classes = AutowiredMockTest.MockedConfig.class)
     public class AutowiredMockTest {
         @Configuration
-        @ImportResource("classpath:/beans.xml")
+        @ImportResource("classpath:/beans.xml")  // Original configuration
         static class MockedConfig{
             @Mock
             private ExceptionGenerator exceptionGenerator;
