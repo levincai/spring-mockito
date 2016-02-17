@@ -1,7 +1,7 @@
 spring-mockito
 ==============
 
-Significantly simplifies Spring bean mocking by providing [MockitoPropagatingFactoryPostProcessor](https://github.com/srgg/spring-mockito/blob/master/src/main/java/com/github/srgg/springmockito/MockitoPropagatingFactoryPostProcessor.java) that replace original beans with their mocks, therefore as a result Autowiring works fine out of the box. You can find Spring Test example below.
+Significantly simplifies Spring bean mocking by providing [MockitoPropagatingFactoryPostProcessor](https://github.com/srgg/spring-mockito/blob/master/src/main/java/com/github/srgg/springmockito/MockitoPropagatingFactoryPostProcessor.java) that replace original beans with their mocks, therefore, as a result, Autowiring is working fine out of the box.
 
 Simple step by step tutorial
 ============================
@@ -50,8 +50,11 @@ and corresponding beans.xml:
 ```
 
 
-Let's create a test to ensure that errorHandler will be called by integerConverter exactly one time in case of error. So, in terms of Mockito we need to inject the mocked errorHandler and verify interactions count. This might be done by adding MockitoPropagatingFactoryPostProcessor to the Spring context.
-MockitoPropagatingFactoryPostProcessor - is a BeanFactoryPostProcessor
+Let's create a test to ensure that errorHandler will be called by integerConverter exactly one time in case of error. So, in Mockito's terms:
+
+> we need to inject the mocked errorHandler and verify interactions count.
+
+This might be done by adding MockitoPropagatingFactoryPostProcessor as follows:
 
 ```java
 
